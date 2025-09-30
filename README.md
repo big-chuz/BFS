@@ -5,6 +5,8 @@ This is the configuration for an AI backend targetting the following hardware:
 - 2 x AMD EPYC 9755 CPUs
 - About 1.5 TB DDR5 ECC Registered RAM
 
+[Mood](https://www.youtube.com/watch?v=4mQ1wAi-pbc)
+
 Currently, this cofiguration implements three LLMs running via vLLM which are accesse via a `litellm` proxy server:
 
 - GPT-OSS-120b for deep reasoning tasks
