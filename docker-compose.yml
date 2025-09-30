@@ -1,0 +1,98 @@
+
+version: '3.8'
+
+services:
+  ################################################################
+  # 1. LiteLLM API Gateway
+  ################################################################
+  litellm-proxy:
+    image: ghcr.io/berriai/litellm:main-stable
+    command: ["--config", "/app/config.yaml"]
+    ports:
+      - "8000:4000" # Expose the proxy on host port 8000
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml # Assumes config is in the same directory
+    depends_on:
+      vllm-large:
+        condition: service_started
+      vllm-vision:
+        condition: service_started
+      vllm-small:
+        condition: service_started
+    restart: always
+
+  ################################################################
+  # 2.  Large model (currenlty GPT-OSS-120b)
+  ################################################################
+  vllm-large:
+    image: vllm/vllm-openai:latest
+    command:
+      - "--model"
+      - "openai/gpt-oss-120b"
+      - "--tensor-parallel-size"
+      - "4"
+      - "--host"
+      - "0.0.0.0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0', '1', '2', '3']
+              capabilities: [gpu]
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN} # Use an environment variable for safety
+    volumes:
+      - ~/hugging_face:/root/.cache/huggingface
+    ipc: host
+    restart: always
+
+  ################################################################
+  # 3. Vision Model Service (Starts with `up`)
+  # The vision model backend.
+  ################################################################
+  vllm-vision:
+    image: vllm/vllm-openai:latest
+    command:
+      - "--model"
+      - "Qwen/Qwen2.5-VL-32B-Instruct"
+      - "--tensor-parallel-size"
+      - "2"
+      - "--host"
+      - "0.0.0.0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['4', '7']
+              capabilities: [gpu]
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN}
+    volumes:
+      - ~/hugging_face:/root/.cache/huggingface
+    ipc: host
+    restart: always
+
+  vllm-small:
+    image: vllm/vllm-openai:latest
+    command:
+      - "--model"
+      - "openai/gpt-oss-20b"
+      - "--tensor-parallel-size"
+      - "1"
+      - "--host"
+      - "0.0.0.0"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['5']
+              capabilities: [gpu]
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN} # Use an environment variable for safety
+    volumes:
+      - ~/hugging_face:/root/.cache/huggingface
+    ipc: host
+    restart: always

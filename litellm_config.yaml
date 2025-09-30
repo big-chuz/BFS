@@ -1,0 +1,22 @@
+
+model_list:
+  - model_name: large
+    litellm_params:
+      model: openai/openai/gpt-oss-120b
+      api_base: http://vllm-large:8000/v1
+      api_key: "EMPTY"
+
+  - model_name: small
+    litellm_params:
+      model: openai/openai/gpt-oss-20b
+      api_base: http://vllm-small:8000/v1
+      api_key: "EMPTY"
+
+  - model_name: vision
+    litellm_params:
+      model: openai/Qwen/Qwen2.5-VL-32B-Instruct
+      api_base: http://vllm-vision:8000/v1
+      api_key: "EMPTY"
+
+litellm_settings:
+  drop_params: True
