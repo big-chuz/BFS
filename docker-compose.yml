@@ -30,7 +30,10 @@ services:
       - "--model"
       - "openai/gpt-oss-120b"
       - "--tensor-parallel-size"
-      - "4"
+      - "2"
+      - "--enable-auto-tool-choice"
+      - "--tool-call-parser"
+      - "llama3_json"
       - "--host"
       - "0.0.0.0"
     deploy:
@@ -57,6 +60,9 @@ services:
       - "Qwen/Qwen2.5-VL-32B-Instruct"
       - "--tensor-parallel-size"
       - "2"
+      - "--enable-auto-tool-choice"
+      - "--tool-call-parser"
+      - "llama3_json"
       - "--host"
       - "0.0.0.0"
     deploy:
@@ -72,7 +78,7 @@ services:
       - ~/hugging_face:/root/.cache/huggingface
     ipc: host
     restart: always
-    
+
   ################################################################
   # 4. Small Model (currently gpt-oss-20b)
   ################################################################
@@ -83,6 +89,9 @@ services:
       - "openai/gpt-oss-20b"
       - "--tensor-parallel-size"
       - "1"
+      - "--enable-auto-tool-choice"
+      - "--tool-call-parser"
+      - "llama3_json"
       - "--host"
       - "0.0.0.0"
     deploy:
