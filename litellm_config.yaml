@@ -1,21 +1,15 @@
 
 model_list:
-  - model_name: large
+  - model_name: reasoning
     litellm_params:
-      model: openai/openai/gpt-oss-120b
-      api_base: http://vllm-large:8000/v1
+      model: openai/clowman/Llama-3.1-405B-Instruct-AWQ-Int4
+      api_base: http://vllm-reasoning:8000/v1
       api_key: "EMPTY"
 
-  - model_name: small
+  - model_name: multimodal
     litellm_params:
-      model: openai/openai/gpt-oss-20b
-      api_base: http://vllm-small:8000/v1
-      api_key: "EMPTY"
-
-  - model_name: vision
-    litellm_params:
-      model: openai/Qwen/Qwen2.5-VL-32B-Instruct
-      api_base: http://vllm-vision:8000/v1
+      model: openai/Qwen/Qwen3-Omni-30B-A3B-Instruct
+      api_base: http://vllm-multimodal:8000/v1
       api_key: "EMPTY"
 
 litellm_settings:
